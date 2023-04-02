@@ -4,7 +4,7 @@
     <string name="firstname">Nombre</string>
     <string name="lastname">Apellido</string>
     <string name="send">Enviar</string>
-
+    <string name="show_tasks">Ver los usuarios</string>
 
 
 </resources>
