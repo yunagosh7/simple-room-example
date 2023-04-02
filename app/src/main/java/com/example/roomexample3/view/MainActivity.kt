@@ -22,11 +22,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "user_database"
-        ).build()
+        database = AppDatabase.getInstance(this)
 
 
         binding.btnAddUser.setOnClickListener {
@@ -71,14 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToTasksActivity() {
         val intent = Intent(this, TaskListActivity::class.java)
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = database.userDao().getByName("Juan Cruz", "Vila")
-            intent.putExtra(TaskListActivity.EXTRA_FIRSTNAME, user.name)
-            intent.putExtra(TaskListActivity.EXTRA_LASTNAME, user.lastName)
-            runOnUiThread {
-                startActivity(intent)
-            }
-        }
+        startActivity(intent)
     }
 
 

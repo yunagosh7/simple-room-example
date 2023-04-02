@@ -10,6 +10,7 @@
 
 
     <color name="background">#252525</color>
+    <color name="background_item">#353535</color>
 
 
 </resources>
