@@ -2,8 +2,9 @@ package com.example.roomexample3.adapters
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.example.roomexample3.database.User
+import com.example.roomexample3.database.Product
 import com.example.roomexample3.databinding.ItemUserBinding
+import com.example.roomexample3.model.ProductCategories
 
 class UsersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -11,9 +12,19 @@ class UsersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemUserBinding.bind(view)
 
 
-    fun bind(user: User) {
-        binding.tvName.text = user.name
-        binding.tvLastName.text = user.lastName
+    fun bind(product: Product) {
+        binding.tvName.text = product.name
+        binding.tvPrice.text = product.price.toString()
+
+        val category = when(product.category) {
+            ProductCategories.OTROS -> "Otros"
+            ProductCategories.TECNOLOGIA -> "Tecnología"
+            ProductCategories.ELECTRODOMESTICOS -> "Electrodomésticos"
+            ProductCategories.DEPORTES -> "Deportes"
+            ProductCategories.VESTIMENTA -> "Vestimenta"
+        }
+
+        binding.tvCategory.text = category
     }
 
 

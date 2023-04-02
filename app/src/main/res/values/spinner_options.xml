@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_options">
+        <item>Otros</item>
+        <item>Tecnología</item>
+        <item>Electrodomésticos</item>
+        <item>Deportes</item>
+        <item>Vestimenta</item>
+    </string-array>
+</resources>

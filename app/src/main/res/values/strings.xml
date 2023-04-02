@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">RoomExample3</string>
 
-    <string name="firstname">Nombre</string>
-    <string name="lastname">Apellido</string>
+    <string name="product">Producto</string>
+    <string name="price">Precio</string>
     <string name="send">Enviar</string>
-    <string name="show_tasks">Ver los usuarios</string>
+    <string name="show_tasks">Ver los productos</string>
+    <string name="category">Categoria</string>
 
 
 </resources>
