@@ -2,13 +2,23 @@ package com.example.roomexample3.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.roomexample3.adapters.UsersAdapter
 import com.example.roomexample3.database.AppDatabase
 import com.example.roomexample3.databinding.ActivityTaskListBinding
+import com.example.roomexample3.viewmodel.ProductListViewModel
+import com.example.roomexample3.viewmodel.ProductListViewModelFactory
+import com.example.roomexample3.viewmodel.ProductViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProductListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTaskListBinding
     private lateinit var database: AppDatabase
+    private lateinit var viewModel: ProductListViewModel
 
     private lateinit var adapter: UsersAdapter
 
@@ -19,8 +29,19 @@ class ProductListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         database = AppDatabase.getInstance(this)
+        val viewModelFactory = ProductListViewModelFactory(database.productDao())
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductListViewModel::class.java)
 
-       //getUserList()
+
+
+        viewModel.allProducts.observe(this, Observer {
+            val response = it
+            adapter = UsersAdapter(response)
+            binding.rvUsers.layoutManager = LinearLayoutManager(this)
+            binding.rvUsers.adapter = adapter
+        })
+
+
         initUI()
 
     }
@@ -28,18 +49,6 @@ class ProductListActivity : AppCompatActivity() {
     private fun initUI() {
 
     }
-
-    /*private fun getUserList() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = database.userDao().getAll()
-            runOnUiThread {
-                adapter = UsersAdapter(response)
-                binding.rvUsers.layoutManager = LinearLayoutManager(this@TaskListActivity)
-                binding.rvUsers.adapter = adapter
-            }
-        }
-
-    }*/
 
 
 }
