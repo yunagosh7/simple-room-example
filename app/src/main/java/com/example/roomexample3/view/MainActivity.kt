@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.roomexample3.R
 import com.example.roomexample3.database.AppDatabase
 import com.example.roomexample3.database.Product
 import com.example.roomexample3.databinding.ActivityMainBinding
 import com.example.roomexample3.model.ProductCategories
 import com.example.roomexample3.toast
+import com.example.roomexample3.viewmodel.ProductViewModelFactory
+import com.example.roomexample3.viewmodel.ProductsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,8 +22,11 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: AppDatabase
+    private lateinit var viewModel: ProductsViewModel
+    lateinit var product: Product
 
     private lateinit var categorySelected: ProductCategories
+    private lateinit var spinnerAdapter: ArrayAdapter<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +35,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         database = AppDatabase.getInstance(this)
+        val viewModelFactory = ProductViewModelFactory(database.productDao())
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductsViewModel::class.java)
 
+        initUI()
+        initListeners()
 
-       binding.btnAddUser.setOnClickListener {
-            val name = binding.etName.text.toString()
-            val price = binding.etPrice.text.toString().toInt()
-            addProduct(name, price, categorySelected)
+    }
+
+    private fun initUI() {
+        val spinnerOptions: Array<String> = resources.getStringArray(R.array.spinner_options)
+        spinnerAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_dropdown_item,
+            spinnerOptions
+        )
+        binding.spinnerCategories.adapter = spinnerAdapter
+
+    }
+
+    private fun initListeners() {
+        binding.btnAddUser.setOnClickListener {
+            addProduct()
+        }
+
+        binding.btnNavigate.setOnClickListener {
+            navigateToTasksActivity()
         }
 
         binding.spinnerCategories.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
@@ -53,55 +78,46 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 categorySelected = ProductCategories.OTROS
             }
-
         }
-
-        binding.btnNavigate.setOnClickListener {
-            navigateToTasksActivity()
-        }
-
-        initUI()
-
-    }
-
-    private fun initUI() {
-        val spinnerOptions: Array<String> = resources.getStringArray(R.array.spinner_options)
-        val spinnerAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_dropdown_item,
-            spinnerOptions
-        )
-        binding.spinnerCategories.adapter = spinnerAdapter
-
     }
 
 
-    private fun addProduct(name: String, price: Int, category: ProductCategories) {
-        if(validateFields()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                database.userDao().insertOne(Product(name = name, price = price, category = category))
+    private fun addProduct() {
+        CoroutineScope(Dispatchers.IO).launch {
+            if(isEntryValid()) {
+                viewModel.addNewItem(
+                    binding.etName.text.toString(),
+                    binding.etPrice.text.toString(),
+                    categorySelected
+                )
                 runOnUiThread {
-                    resetFields()
                     toast("Anduvo")
+                    resetFields()
                 }
+
+            } else {
+                toast("Porfavor ingrese valores en los campos")
             }
         }
+
     }
 
-    private fun validateFields(): Boolean {
-        if(binding.etName.text.isBlank() || binding.etPrice.text.isBlank() ) {
-            toast("Porfavor ingrese datos en los campos")
-             return false
-        }
-        return true
+    private fun isEntryValid(): Boolean {
+        return viewModel.isEntryValid(
+            binding.etName.text.toString(),
+            binding.etPrice.text.toString()
+        )
     }
 
     private fun resetFields() {
         binding.etName.text.clear()
         binding.etPrice.text.clear()
+        binding.spinnerCategories.setSelection(0)
+        categorySelected = ProductCategories.OTROS
     }
 
     private fun navigateToTasksActivity() {
-        val intent = Intent(this, TaskListActivity::class.java)
+        val intent = Intent(this, ProductListActivity::class.java)
         startActivity(intent)
     }
 

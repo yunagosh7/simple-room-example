@@ -2,15 +2,11 @@ package com.example.roomexample3.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.roomexample3.adapters.UsersAdapter
 import com.example.roomexample3.database.AppDatabase
 import com.example.roomexample3.databinding.ActivityTaskListBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class TaskListActivity : AppCompatActivity() {
+class ProductListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTaskListBinding
     private lateinit var database: AppDatabase
 
@@ -24,7 +20,7 @@ class TaskListActivity : AppCompatActivity() {
 
         database = AppDatabase.getInstance(this)
 
-        getUserList()
+       //getUserList()
         initUI()
 
     }
@@ -33,7 +29,7 @@ class TaskListActivity : AppCompatActivity() {
 
     }
 
-    private fun getUserList() {
+    /*private fun getUserList() {
         CoroutineScope(Dispatchers.IO).launch {
             val response = database.userDao().getAll()
             runOnUiThread {
@@ -43,7 +39,7 @@ class TaskListActivity : AppCompatActivity() {
             }
         }
 
-    }
+    }*/
 
 
 }
