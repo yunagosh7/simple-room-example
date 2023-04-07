@@ -11,6 +11,9 @@
 
     <color name="background">#252525</color>
     <color name="background_item">#353535</color>
+    <color name="btn_add">#38B63A</color>
+    <color name="btn_cancel">#DF2929</color>
+    <color name="btn_update">#1CBEEF</color>
 
 
 </resources>
