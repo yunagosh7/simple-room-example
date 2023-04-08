@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         val spinnerOptions: Array<String> = resources.getStringArray(R.array.spinner_options)
+
+        // Enlaza las opciones del spinner con la vista
         spinnerAdapter = ArrayAdapter(this,
             android.R.layout.simple_spinner_dropdown_item,
             spinnerOptions
@@ -76,40 +78,37 @@ class MainActivity : AppCompatActivity() {
 
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                categorySelected = ProductCategories.OTROS
+                categorySelected = ProductCategories.OTROS // Valor por defecto si no se selecciona nada
             }
         }
     }
 
 
     private fun addProduct() {
-        CoroutineScope(Dispatchers.IO).launch {
             if(isEntryValid()) {
                 viewModel.addNewItem(
                     binding.etName.text.toString(),
                     binding.etPrice.text.toString(),
                     categorySelected
                 )
-                runOnUiThread {
-                    toast("Anduvo")
+                    toast("El producto ha sido añadido")
                     resetFields()
-                }
 
             } else {
-                toast("Porfavor ingrese valores en los campos")
+                    toast("Porfavor ingrese valores en los campos")
             }
-        }
+
 
     }
 
     private fun isEntryValid(): Boolean {
-        return viewModel.isEntryValid(
-            binding.etName.text.toString(),
-            binding.etPrice.text.toString()
-        )
+        // Valida los campos
+        return if(binding.etName.text.toString().isBlank() || binding.etPrice.text.toString().isBlank()) false
+        else true
     }
 
     private fun resetFields() {
+        // Resetea los campos
         binding.etName.text.clear()
         binding.etPrice.text.clear()
         binding.spinnerCategories.setSelection(0)

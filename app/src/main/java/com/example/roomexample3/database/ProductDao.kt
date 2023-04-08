@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,4 +23,7 @@ interface ProductDao {
 
     @Delete
     fun delete(product: Product)
+
+    @Update
+    fun update(product: Product)
 }

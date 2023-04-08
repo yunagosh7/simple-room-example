@@ -28,11 +28,12 @@
 
 
         <Button
-            android:id="@+id/btn_dialog_cancel"
+            android:id="@+id/btn_dialog_delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:text="Cancelar"
+            android:text="@string/delete"
+            android:textColor="@color/white"
             android:backgroundTint="@color/btn_cancel"/>
 
         <Button
@@ -40,7 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:text="Actualizar"
+            android:text="@string/update"
+            android:textColor="@color/white"
             android:backgroundTint="@color/btn_update"/>
 
 

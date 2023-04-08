@@ -27,16 +27,8 @@ class ProductsViewModel(private val productDao: ProductDao) : ViewModel() {
     }
 
     fun addNewItem(productName: String, productPrice: String, productCategory: ProductCategories) {
-        Log.d("ViewModel", "nombre: $productName")
-        Log.d("ViewModel", "precio: $productPrice")
-        Log.d("ViewModel", "categoria: $productCategory")
         val newProduct = getNewItemEntry(productName, productPrice.toInt(), productCategory)
         insertOne(newProduct)
-    }
-
-    fun isEntryValid(productName: String, productPrice: String): Boolean {
-        return if(productName.isBlank() || productPrice.isBlank() ) false
-        else true
     }
 }
 

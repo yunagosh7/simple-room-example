@@ -12,7 +12,7 @@ class ProductsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemUserBinding.bind(view)
 
 
-    fun bind(product: Product, onItemClick: (String, Int, ProductCategories) -> Unit ) {
+    fun bind(product: Product, onItemClick: (Product) -> Unit ) {
         binding.tvName.text = product.name
         binding.tvPrice.text = product.price.toString()
 
@@ -27,7 +27,7 @@ class ProductsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         binding.tvCategory.text = category
 
         binding.ibEdit.setOnClickListener {
-            onItemClick(product.name, product.price, product.category)
+            onItemClick(product)
         }
 
     }

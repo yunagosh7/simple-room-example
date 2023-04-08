@@ -9,7 +9,7 @@ import com.example.roomexample3.model.ProductCategories
 
 class ProductsAdapter(
     private var productList: List<Product> = emptyList(),
-    val onItemClick: (String, Int, ProductCategories) -> Unit
+    val onItemClick: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
