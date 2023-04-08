@@ -12,12 +12,14 @@ import kotlinx.coroutines.launch
 
 class ProductsViewModel(private val productDao: ProductDao) : ViewModel() {
 
+    // Inserta un item usando el DAO
     private fun insertOne(product: Product) {
         CoroutineScope(Dispatchers.IO).launch {
             productDao.insertOne(product)
         }
     }
 
+    // Recibe los datos y devuelve un producto
     private fun getNewItemEntry(productName: String, price: Int, category: ProductCategories): Product {
         return Product(
             name = productName,
@@ -26,6 +28,7 @@ class ProductsViewModel(private val productDao: ProductDao) : ViewModel() {
         )
     }
 
+    // Crea el item y lo inserta en la DB
     fun addNewItem(productName: String, productPrice: String, productCategory: ProductCategories) {
         val newProduct = getNewItemEntry(productName, productPrice.toInt(), productCategory)
         insertOne(newProduct)

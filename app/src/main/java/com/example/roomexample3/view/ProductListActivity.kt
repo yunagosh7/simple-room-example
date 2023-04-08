@@ -34,6 +34,15 @@ class ProductListActivity : AppCompatActivity() {
     private lateinit var categorySelected: ProductCategories
 
 
+    // Componentes del Dialog
+    private lateinit var etProductName: EditText
+    private lateinit var etProductPrice: EditText
+    private lateinit var spinner: Spinner
+    private lateinit var btnUpdate: Button
+    private lateinit var btnDelete: Button
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTaskListBinding.inflate(layoutInflater)
@@ -43,15 +52,18 @@ class ProductListActivity : AppCompatActivity() {
         val viewModelFactory = ProductListViewModelFactory(database.productDao())
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProductListViewModel::class.java)
 
-        viewModel.allProducts.observe(this, Observer {
-            val response = it
-            adapter = ProductsAdapter(response) { product ->
+        initObservers()
+
+    }
+
+    private fun initObservers() {
+        viewModel.allProducts.observe(this, Observer {productList ->
+            adapter = ProductsAdapter(productList) { product ->
                 onItemClick(product)
             }
             binding.rvUsers.layoutManager = LinearLayoutManager(this)
             binding.rvUsers.adapter = adapter
         })
-
     }
 
 
@@ -66,17 +78,11 @@ class ProductListActivity : AppCompatActivity() {
             spinnerOptions
         )
 
-        val etProductName = dialog.findViewById<EditText>(R.id.et_dialog_name)
-        val etProductPrice = dialog.findViewById<EditText>(R.id.et_dialog_price)
-        val spinner = dialog.findViewById<Spinner>(R.id.spinner_dialog_categories)
-        val btnUpdate = dialog.findViewById<Button>(R.id.btn_dialog_update)
-        val btnDelete = dialog.findViewById<Button>(R.id.btn_dialog_delete)
-
+        // Inicializa los componentes del Dialog
+        initDialogComponents(dialog)
 
         etProductName.setText(product.name)
         etProductPrice.setText(product.price.toString())
-
-
 
         spinner.adapter = spinnerAdapter
         val categoryIndex = when (product.category) {
@@ -87,6 +93,42 @@ class ProductListActivity : AppCompatActivity() {
             ProductCategories.VESTIMENTA -> 4
         }
         spinner.setSelection(categoryIndex)
+
+        initDialogComponentsListeners(product, dialog)
+
+        dialog.show()
+
+    }
+
+
+    private fun initDialogComponents(dialog: Dialog) {
+        etProductName = dialog.findViewById(R.id.et_dialog_name)
+        etProductPrice = dialog.findViewById(R.id.et_dialog_price)
+        spinner = dialog.findViewById(R.id.spinner_dialog_categories)
+        btnUpdate = dialog.findViewById(R.id.btn_dialog_update)
+        btnDelete = dialog.findViewById(R.id.btn_dialog_delete)
+    }
+
+    private fun initDialogComponentsListeners(product: Product, dialog: Dialog) {
+        btnUpdate.setOnClickListener {
+            if (isEntryValid(etProductName.text.toString(), etProductPrice.text.toString())) {
+                updateOne(
+                    product.id,
+                    etProductName.text.toString(),
+                    etProductPrice.text.toString(),
+                    categorySelected
+                )
+                adapter.notifyDataSetChanged()
+                dialog.hide()
+            } else {
+                toast("Porfavor ingrese valores en los campos")
+            }
+        }
+
+        btnDelete.setOnClickListener {
+            delete(product)
+            dialog.hide()
+        }
 
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -107,38 +149,14 @@ class ProductListActivity : AppCompatActivity() {
                 Log.i("ProductListActivity", "categorySelected: $categorySelected")
             }
 
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 categorySelected = ProductCategories.OTROS
             }
         }
 
-
-        btnUpdate.setOnClickListener {
-            if (isEntryValid(etProductName.text.toString(), etProductPrice.text.toString())) {
-                updateOne(
-                    product.id,
-                    etProductName.text.toString(),
-                    etProductPrice.text.toString(),
-                    categorySelected
-                )
-                adapter.notifyDataSetChanged()
-                dialog.hide()
-            } else {
-                toast("Porfavor ingrese valores en los campos")
-            }
-        }
-
-
-        btnDelete.setOnClickListener {
-            delete(product)
-            dialog.hide()
-        }
-
-
-        dialog.show()
-
     }
+
+
 
     private fun delete(product: Product) {
         viewModel.delete(product)
